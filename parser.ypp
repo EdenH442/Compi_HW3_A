@@ -1,0 +1,95 @@
+%{
+#include "SymbolTable.h"
+#include "output.hpp"
+#include <iostream>
+
+using namespace output;
+int main();
+void yyerror(const char*);
+extern int yylex();
+extern int yylineno;
+%}
+
+
+%token VOID INT BYTE B BOOL TRUE FALSE RETURN IF WHILE BREAK CONTINUE SC
+COMMA ID NUM STRING
+
+%right ASSIGN
+%left OR
+%left AND
+%left EQOP
+%left RELOP
+%left BINOP
+%left MULTDIVTOP
+%right NOT
+%left RPAREN LPAREN LBRACE RBRACE
+%right ELSE
+
+%%
+Prog: Funcs                                     {} \\1
+;
+Funcs: /*epsilon*/                              {} \\2
+        | FuncDecl Funcs                        {} \\3
+ ;
+FuncDecl: RetType ID LPAREN Formals RPAREN LBRACE Statements RBRACE {} \\4
+;
+RetType: Type                                   {} \\5
+         | VOID                                 {} \\6
+;
+Formals: /*epsilon*/                            {} \\7
+        | FormalsList                           {} \\8
+;
+FormalsList: FormalDecl                         {} \\9
+             | FormalDecl COMMA FormalsList     {} \\10
+;
+FormalDecl: Type ID                             {} \\11
+;
+Statements: Statement                           {} \\12
+            | Statements Statement              {} \\13
+;
+Statement: LBRACE Statements RBRACE             {} \\14
+            | Type ID SC                        {} \\15
+            | Type ID ASSIGN Exp SC             {} \\16
+            | ID ASSIGN Exp SC                  {} \\17
+            | Call SC                           {} \\18
+            | RETURN SC                         {} \\19
+            | RETURN Exp SC                     {} \\20
+            | IF LPAREN Exp RPAREN Statement    {} \\21
+            | IF LPAREN Exp RPAREN Statement ELSE Statement   {printProductionRule(22);} \\22
+            | WHILE LPAREN Exp RPAREN Statement {} \\23
+            | BREAK SC                          {} \\24
+            | CONTINUE SC                       {} \\25
+;
+Call :ID LPAREN ExpList RPAREN                  {} \\26
+      | ID LPAREN RPAREN                        {} \\27
+;
+ExpList: Exp                                     {} \\28
+         | Exp COMMA ExpList                     {} \\29
+;
+Type :INT                                        {} \\30
+      | BYTE                                     {} \\31
+      | BOOL                                     {} \\32
+;
+Exp: LPAREN Exp RPAREN                           {} \\33
+      | Exp IF LPAREN Exp RPAREN ELSE Exp        {} \\34
+      | Exp BINOP Exp                            {} \\35
+      | Exp MULTDIVTOP Exp                       {} \\35
+      | ID                                       {} \\36
+      | Call                                     {} \\37
+      | NUM                                      {} \\38
+      | NUM B                                    {} \\39
+      | STRING                                   {} \\40
+      | TRUE                                     {} \\41
+      | FALSE                                    {} \\42
+      | NOT Exp                                  {} \\43
+      | Exp AND Exp                              {} \\44
+      | Exp OR Exp                               {} \\45
+      | Exp RELOP Exp                            {} \\46
+      | Exp EQOP Exp                             {} \\47
+      | LPAREN Type RPAREN Exp                   {} \\48
+;
+%%
+void yyerror(const char*) {errorSyn(yylineno); exit(1);}
+int main() {
+    return yyparse();
+}
