@@ -33,9 +33,9 @@ public:
 
 };
 
-ExpType GetType(std::shared_ptr<TypeVar> const &var1, std::shared_ptr<TypeVar> const &var2);
-void CheckIsNum(std::shared_ptr<TypeVar> const &var, int lineno);
-void CheckIsBool(std::shared_ptr<TypeVar> const &var, int lineno);
+ExpType GetType(std::shared_ptr<TypeVar> var1, std::shared_ptr<TypeVar> var2);
+void CheckIsNum(std::shared_ptr<TypeVar> var, int lineno);
+void CheckIsBool(std::shared_ptr<TypeVar> var, int lineno);
 void CheckAssign(std::shared_ptr<TypeVar> left_var, std::shared_ptr<TypeVar> right_var, int lineno);
 void CheckByteOverflow(std::shared_ptr<TypeVar> var, int lineno);
 

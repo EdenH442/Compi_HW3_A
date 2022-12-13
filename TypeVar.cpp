@@ -1,6 +1,6 @@
 #include "TypeVar.h"
 
-ExpType GetType(std::shared_ptr<TypeVar> const &var1, std::shared_ptr<TypeVar> const &var2)
+ExpType GetType(std::shared_ptr<TypeVar> var1, std::shared_ptr<TypeVar> var2)
 {
     if (var1->type == INT_EXP || var2->type == INT_EXP)
     {
@@ -12,7 +12,7 @@ ExpType GetType(std::shared_ptr<TypeVar> const &var1, std::shared_ptr<TypeVar> c
     }
 }
 
-void CheckIsNum(std::shared_ptr<TypeVar> const &var, int lineno)
+void CheckIsNum(std::shared_ptr<TypeVar> var, int lineno)
 {
     if(!(var->type == INT_EXP || var->type == BYTE_EXP || var->type == NONE))
     {
@@ -21,7 +21,7 @@ void CheckIsNum(std::shared_ptr<TypeVar> const &var, int lineno)
     }
 }
 
-void CheckIsBool(std::shared_ptr<TypeVar> const &var, int lineno)
+void CheckIsBool(std::shared_ptr<TypeVar> var, int lineno)
 {
     if(! (var->type == BOOL_EXP || var->type == NONE))
     {
@@ -55,13 +55,13 @@ void CheckByteOverflow(std::shared_ptr<TypeVar> var, int lineno)
 }
 
 
-std::vector<string> PushBackVarID(const string& var, std::vector<string> vars_list)
+std::vector<string> PushBackVarID(string var, std::vector<string> vars_list)
 {
     vars_list.push_back(var);
     return vars_list;
 }
 
-std::vector<ExpType> PushBackVarType(const ExpType& var_type, std::vector<ExpType> types_list)
+std::vector<ExpType> PushBackVarType(ExpType var_type, std::vector<ExpType> types_list)
 {
     types_list.push_back(var_type);
     return types_list;

@@ -67,7 +67,7 @@ static vector<string> ReverseVector(vector<ExpType> vec)
     return ConvertExpTypeToString(reverse_vec);
 }
 
-void VarExistsInScope(std::shared_ptr<TypeVar> const &var, int lineno)
+void VarExistsInScope(std::shared_ptr<TypeVar> var, int lineno)
 {
     bool found = false;
     symTableBlockEntry entry_found;
@@ -93,7 +93,7 @@ void VarExistsInScope(std::shared_ptr<TypeVar> const &var, int lineno)
     exit(1);
 }
 
-void CallFunction(const std::shared_ptr<TypeVar>& id_var,  std::shared_ptr<TypeVar>& params,
+void CallFunction(std::shared_ptr<TypeVar> id_var,  std::shared_ptr<TypeVar>& params,
                             std::shared_ptr<TypeVar>& caller, int lineno)
 {
     symTableBlockEntry entry_found;
@@ -169,7 +169,7 @@ void CallFunction(const std::shared_ptr<TypeVar>& id_var,  std::shared_ptr<TypeV
     }
 }
 
-void CheckPrevDeclID(const std::shared_ptr<TypeVar>& var, int lineno)
+void CheckPrevDeclID(std::shared_ptr<TypeVar> var, int lineno)
 {
     for (auto blk = semnatic_manager.sym_tab_stack.rbegin();
             blk !=semnatic_manager.sym_tab_stack.rend(); blk++)
@@ -185,8 +185,7 @@ void CheckPrevDeclID(const std::shared_ptr<TypeVar>& var, int lineno)
     }
 }
 
-void InsertToSymTable(const std::shared_ptr<TypeVar>& type, const std::shared_ptr<TypeVar>& id,
-                      bool func_type ,int lineno)
+void InsertToSymTable(std::shared_ptr<TypeVar> type, std::shared_ptr<TypeVar>id, bool func_type ,int lineno)
 {
     if (type->type == VOID )
     {
