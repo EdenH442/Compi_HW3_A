@@ -38,7 +38,7 @@ void CheckIsNum(std::shared_ptr<TypeVar> var, int lineno);
 void CheckIsBool(std::shared_ptr<TypeVar> var, int lineno);
 void CheckAssign(std::shared_ptr<TypeVar> left_var, std::shared_ptr<TypeVar> right_var, int lineno);
 void CheckByteOverflow(std::shared_ptr<TypeVar> var, int lineno);
-
+std::vector<ExpType> PushBackVarType(ExpType var_type, std::vector<ExpType> types_list);
 
 
 #endif //COMPI_HW3_TYPEVAR_H
