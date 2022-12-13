@@ -125,7 +125,7 @@ Exp:    LPAREN Exp RPAREN                        {$$ = $2;} //33
       | Exp RELOP Exp                            {CheckIsNum($1, yylineno); CheckIsNum($3, yylineno);
                                                   $$ = std::shared_ptr<TypeVar>(); $$->type = BOOL_EXP;} //46
       | Exp EQOP Exp                             {CheckIsNum($1, yylineno); CheckIsNum($3, yylineno);
-                                                  $$ = td::shared_ptr<TypeVar>(); $$->type = BOOL_EXP;} //46
+                                                  $$ = std::shared_ptr<TypeVar>(); $$->type = BOOL_EXP;} //46
       | LPAREN Type RPAREN Exp                   {CheckIsNum($2,yylineno); CheckIsNum($4,yylineno);
                                                    $$ = $4; $$->type = $2->type;} //47
 ;
