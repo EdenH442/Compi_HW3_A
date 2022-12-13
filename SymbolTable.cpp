@@ -93,8 +93,8 @@ void VarExistsInScope(std::shared_ptr<TypeVar> var, int lineno)
     exit(1);
 }
 
-void CallFunction(std::shared_ptr<TypeVar> id_var,  std::shared_ptr<TypeVar>& params,
-                            std::shared_ptr<TypeVar>& caller, int lineno)
+void CallFunction(std::shared_ptr<TypeVar> id_var,  std::shared_ptr<TypeVar> params,
+                            std::shared_ptr<TypeVar> caller, int lineno)
 {
     symTableBlockEntry entry_found;
     auto curr_block = semnatic_manager.sym_tab_stack.front();

@@ -46,8 +46,8 @@ public:
 
 
 void VarExistsInScope(std::shared_ptr<TypeVar> var, int lineno);
-void CallFunction(std::shared_ptr<TypeVar> id_var,  std::shared_ptr<TypeVar>& params,
-                            std::shared_ptr<TypeVar>& caller, int lineno);
+void CallFunction(std::shared_ptr<TypeVar> id_var,  std::shared_ptr<TypeVar> params,
+                            std::shared_ptr<TypeVar> caller, int lineno);
 void CheckPrevDeclID(std::shared_ptr<TypeVar> var, int lineno);
 void ValidateAssign(std::shared_ptr<TypeVar> var, std::shared_ptr<TypeVar> exp, int lineno);
 void CheckVoidScope(int lineno);
