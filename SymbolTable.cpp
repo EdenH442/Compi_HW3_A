@@ -6,65 +6,39 @@ SemanticsManager semnatic_manager;
 
 string EnumToString(ExpType type)
 {
-    switch (type) {
-        case NONE:
-            return "NONE";
-        case INT_EXP:
-            return "INT";
-        case BYTE_EXP:
-            return "BYTE";
-        case BOOL_EXP:
-            return "BOOL";
-        case STRING_EXP:
-            return "STRING";
-        case VOID_EXP:
-            return "VOID";
-        case EMPTY:
-            return "";
+    if(type==NONE){
+        return "NONE";
     }
-}
+    if(type==INT_EXP){
+        return "INT";
+    }
+    if(type==BYTE_EXP){
+        return "BYTE";
+    }
+    if(type==BOOL_EXP){
+        return "BOOL";
+    }
+    if(type==STRING_EXP){
+        return "STRING";
+    }
+    if(type==VOID_EXP){
+        return "VOID";
+    }
+    if(type==EMPTY){
+        return "";
+    }
 
-vector<string> ConvertExpTypeToString(vector<ExpType> vec)
-{
-    vector<string> res;
-    for (int i = 0; i < vec.size(); i++)
-    {
-        switch (vec[i])
-        {
-            case NONE:
-              res.push_back("NONE");
-              continue;
-            case INT_EXP:
-                res.push_back("INT");
-                continue;
-            case BYTE_EXP:
-                res.push_back("BYTE");
-                continue;
-            case BOOL_EXP:
-                res.push_back("BOOL");
-                continue;
-            case STRING_EXP:
-                res.push_back("STRING");
-                continue;
-            case VOID_EXP:
-                res.push_back("VOID");
-                continue;
-            case EMPTY:
-                res.push_back("");
-                continue;
-        }
-    }
-    return res;
+    return "";
 }
 
 static vector<string> ReverseVector(vector<ExpType> vec)
 {
-    vector<ExpType> reverse_vec;
+    vector<string> reverse_vec;
     for (int i = vec.size() - 1; i >= 0; i--)
     {
-        reverse_vec.push_back(vec[i]);
+        reverse_vec.push_back(EnumToString(vec[i]));
     }
-    return ConvertExpTypeToString(reverse_vec);
+    return reverse_vec;
 }
 
 void VarExistsInScope(std::shared_ptr<TypeVar> var, int lineno)
@@ -239,6 +213,7 @@ void CheckVoidScope(int lineno)
         output::errorMismatch(lineno);
         exit(1);
     }
+    return;
 }
 
 void ValidateRetType(std::shared_ptr<TypeVar> var, int lineno)
@@ -405,6 +380,7 @@ void CloseMainScope()
         exit(1);
     }
     CloseBlock();
+    return;
 }
 
 
