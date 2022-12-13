@@ -1,10 +1,14 @@
 #ifndef COMPI_HW3_SYMBOLTABLE_H
 #define COMPI_HW3_SYMBOLTABLE_H
 
+#include <string>
+#include <vector>
 #include <stack>
+#include "TypeVar.h"
 
-class symTableBlockEntry
-{
+using std::string;
+
+class symTableBlockEntry{
 public:
     int offset;
     string type;
@@ -14,25 +18,28 @@ public:
     bool null_offset;
     bool is_func = false;
 
-    symTableBlkEntry() = default;
+    symTableBlockEntry() = default;
 
-    symTableBlkEntry(int offset, string id, string type, bool null_offset, bool is_func) :
-            offset(offset), id(id), type(type),null_offset(null_offset), is_func(is_func){}
+    symTableBlockEntry(int offset, string type, string id, bool null_offset, bool is_func) :
+            offset(offset), type(type), id(id), null_offset(null_offset), is_func(is_func){};
 
-    symTableBlkEntry(int offset, string id, std::vector<string> names_vec, std::vector<string> types_vec, string type, bool null_offset, bool is_func) :
-            offset(offset), id(id),names_vec(names_vec), types_vec(types_vec), type(type), null_offset(null_offset), is_func(is_func){}
+    symTableBlockEntry(int offset, string type, string id,std::vector<string> types_vec, std::vector<string> names_vec,
+                       bool null_offset, bool is_func) :
+            offset(offset), type(type), id(id), types_vec(types_vec), names_vec(names_vec),
+            null_offset(null_offset), is_func(is_func){};
 };
 
 typedef struct{
-    vector<symTableBlockEntry> sym_tab;
-    string ret_type;
+    std::vector<symTableBlockEntry> sym_tab;
+    ExpType ret_type;
     bool is_while;
 } symTableBlock;
+
 
 typedef struct{
     std::vector<symTableBlock> sym_tab_stack;
     std::stack<int> offset_stack;
-    bool main_exists = false;
+    bool main_exists;
 //    int while_scope = 0;
 } SemanticsManager;
 
