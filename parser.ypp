@@ -1,6 +1,6 @@
 %{
 #include "SymbolTable.h"
-#include "output.hpp"
+#include "hw3_output.hpp"
 #include <iostream>
 
 using namespace output;
