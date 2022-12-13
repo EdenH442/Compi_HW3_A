@@ -41,13 +41,26 @@ public:
     std::vector<symTableBlock> sym_tab_stack;
     std::stack<int> offset_stack;
     bool main_exists= false;
-//    int while_scope = 0;
+    int while_scope = 0;
 } SemanticsManager;
+
 
 void VarExistsInScope(std::shared_ptr<TypeVar> const &var, int lineno);
 void CallFunction(const std::shared_ptr<TypeVar>& id_var,  std::shared_ptr<TypeVar>& params,
                             std::shared_ptr<TypeVar>& caller, int lineno);
 void CheckPrevDeclID(const std::shared_ptr<TypeVar>& var, int lineno);
+void ValidateAssign(std::shared_ptr<TypeVar> var, std::shared_ptr<TypeVar> exp, int lineno);
+void CheckVoidScope(int lineno);
+void ValidateRetType(std::shared_ptr<TypeVar> var, int lineno);
+void CheckWhileScope(int lineno, bool to_break);
+void InsertParamsToSymTab(std::vector<string> var_names, std::vector<ExpType> var_types, int lineno);
+
+void OpenNewBlock(bool is_while_scope, ExpType ret_type);
+void CloseBlock();
+void WhileBlockState(bool start_while);
+void InsertFuncSymTab(ExpType type, string id, std::vector<string> names_vec, std::vector<ExpType> types_vec);
+void InitMainScope();
+void CloseMainScope();
 
 
 

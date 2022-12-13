@@ -31,7 +31,11 @@ Prog: Funcs                                     {} \\1 Done
 Funcs: /*epsilon*/                              {} \\2 Done
         | FuncDecl Funcs                        {} \\3 Done
  ;
-FuncDecl: RetType ID LPAREN Formals RPAREN LBRACE Statements RBRACE {} \\4 todo
+FuncDecl: RetType ID LPAREN Formals RPAREN {CheckPrevDeclID($2, yylineno);
+                                            InsertFuncSymTab($1->type, $2->id, $4->var_names, $4->var_types);
+                                            OpenNewBlock(false, $1->type);
+                                            InsertParamsToSymTab($4->var_names, $4->var_types, yylineno);}
+                                            LBRACE Statements RBRACE {CloseBlock();} \\4
 ;
 RetType: Type                                   {$$ = $1;} \\5
          | VOID                                 {$$ = std::shared_ptr<TypeVar>(); $$->type = VOID;} \\6
@@ -51,20 +55,38 @@ FormalDecl: Type ID                             {$$ = $2; $$->type = $1->type;} 
 Statements: Statement                           {} \\12  Done
             | Statements Statement              {} \\13  Done
 ;
-Statement: LBRACE Statements RBRACE             {} \\14 todo
+Statement: LBRACE OPENBLOCK Statements RBRACE   {CloseBlock();} \\14
             | Type ID SC                        {CheckPrevDeclID($2, yylineno);
-                                                 InsertToSymTable($1, $2, false,yylineno);} \\15
-            | Type ID ASSIGN Exp SC             {} \\16 todo
-            | ID ASSIGN Exp SC                  {} \\17 todo
+                                                 InsertToSymTable($1, $2, false, yylineno);} \\15
+            | Type ID ASSIGN Exp SC             {CheckPrevDeclID($2, yylineno);
+                                                 CheckAssign($1, $4, yylineno);
+                                                 InsertToSymTable($1, $2, false, yylineno);} \\16
+            | ID ASSIGN Exp SC                  {ValidateAssign($1, $3, yylineno);} \\17
             | Call SC                           {} \\18 Done
-            | RETURN SC                         {} \\19 todo
-            | RETURN Exp SC                     {} \\20 todo
-            | IF LPAREN Exp RPAREN Statement    {} \\21 todo
-            | IF LPAREN Exp RPAREN Statement ELSE Statement   {} \\22 todo
-            | WHILE LPAREN Exp RPAREN Statement {} \\23 todo
-            | BREAK SC                          {} \\24 todo
-            | CONTINUE SC                       {} \\25 todo
+            | RETURN SC                         {CheckVoidScope(yylineno); } \\19
+            | RETURN Exp SC                     {ValidateRetType($2, yylineno); } \\20
+            | IF LPAREN CHECKBOOLVALID RPAREN OPENBLOCK Statement CLOSEBLOCK   {} \\21
+            | IF LPAREN CHECKBOOLVALID RPAREN OPENBLOCK Statement CLOSEBLOCK ELSE OPENBLOCK Statement CLOSEBLOCK {} \\22
+            | WHILE LPAREN CHECKBOOLVALID RPAREN WHILEBLOCK OPENBLOCK Statement CLOSEBLOCK WHILEBLOCKCLOSED{} \\23
+            | BREAK SC                          {CheckWhileScope(yylineno, true);} \\24
+            | CONTINUE SC                       {CheckWhileScope(yylineno, false);} \\25
 ;
+
+/*Markers*/
+
+OPENBLOCK:  /* epsilon */                      {OpenNewBlock(false, EMPTY);}
+;
+CLOSEBLOCK:   /* epsilon */                   {CloseBlock();}
+;
+CHECKBOOLVALID: Exp                           {CheckIsBool($1, yylineno);}
+;
+WHILEBLOCK: /* epsilon */                     {WhileBlockState(true);}
+;
+WHILEBLOCKCLOSED: /* epsilon */               {WhileBlockState(false);}
+;
+
+
+
 Call :  ID LPAREN ExpList RPAREN                  {$$ = $3;
                                                    CallFunction($1, $3, $$, yylineno);
                                                    $$->id = $1->id; } \\26
@@ -113,8 +135,8 @@ void yyerror(const char*) {errorSyn(yylineno); exit(1);}
 
 int main()
 {
-    MainScopeInitialization(); //todo:Implement
+    InitMainScope();
     yyparse();
-    CloseMainScope(); //todo: Implement
+    CloseMainScope();
     return 0;
 }

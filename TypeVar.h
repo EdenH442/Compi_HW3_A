@@ -16,7 +16,8 @@ enum ExpType {
     BYTE_EXP,
     BOOL_EXP,
     STRING_EXP,
-    VOID
+    VOID,
+    EMPTY
 };
 
 class TypeVar {
