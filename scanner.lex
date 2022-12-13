@@ -1,8 +1,8 @@
 %{
-#include "TypeVar.h"
-#include "hw3_output.hpp"
-using namespace output;
-#include "parser.tab.hpp"
+    #include "TypeVar.h"
+    #include "hw3_output.hpp"
+    using namespace output;
+    #include "parser.tab.hpp"
 %}
 
 %option noyywrap
