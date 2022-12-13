@@ -49,6 +49,7 @@ void VarExistsInScope(std::shared_ptr<TypeVar> var, int lineno);
 void CallFunction(std::shared_ptr<TypeVar> id_var,  std::shared_ptr<TypeVar> params,
                             std::shared_ptr<TypeVar> caller, int lineno);
 void CheckPrevDeclID(std::shared_ptr<TypeVar> var, int lineno);
+void InsertToSymTable(std::shared_ptr<TypeVar> type, std::shared_ptr<TypeVar>id, bool func_type ,int lineno);
 void ValidateAssign(std::shared_ptr<TypeVar> var, std::shared_ptr<TypeVar> exp, int lineno);
 void CheckVoidScope(int lineno);
 void ValidateRetType(std::shared_ptr<TypeVar> var, int lineno);
