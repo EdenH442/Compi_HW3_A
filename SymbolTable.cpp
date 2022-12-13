@@ -17,7 +17,7 @@ string EnumToString(ExpType type)
             return "BOOL";
         case STRING_EXP:
             return "STRING";
-        case VOID:
+        case VOID_EXP:
             return "VOID";
         case EMPTY:
             return "";
@@ -46,7 +46,7 @@ vector<string> ConvertExpTypeToString(vector<ExpType> vec)
             case STRING_EXP:
                 res.push_back("STRING");
                 continue;
-            case VOID:
+            case VOID_EXP:
                 res.push_back("VOID");
                 continue;
             case EMPTY:
@@ -187,7 +187,7 @@ void CheckPrevDeclID(std::shared_ptr<TypeVar> var, int lineno)
 
 void InsertToSymTable(std::shared_ptr<TypeVar> type, std::shared_ptr<TypeVar>id, bool func_type ,int lineno)
 {
-    if (type->type == VOID )
+    if (type->type == VOID_EXP )
     {
         output::errorMismatch(lineno);
         exit(1);
@@ -234,7 +234,7 @@ void ValidateAssign(std::shared_ptr<TypeVar> var, std::shared_ptr<TypeVar> exp, 
 
 void CheckVoidScope(int lineno)
 {
-    if (semnatic_manager.sym_tab_stack.back().ret_type != VOID)
+    if (semnatic_manager.sym_tab_stack.back().ret_type != VOID_EXP)
     {
         output::errorMismatch(lineno);
         exit(1);
@@ -381,7 +381,7 @@ void WhileBlockState(bool start_while)
 
 void InsertFuncSymTab(ExpType type, string id, std::vector<string> names_vec, std::vector<ExpType> types_vec)
 {
-    if (id == "main" && type == VOID && types_vec.empty())
+    if (id == "main" && type == VOID_EXP && types_vec.empty())
     {
         semnatic_manager.main_exists = true;
     }
@@ -393,8 +393,8 @@ void InsertFuncSymTab(ExpType type, string id, std::vector<string> names_vec, st
 void InitMainScope()
 {
     OpenNewBlock(false, EMPTY);
-    InsertFuncSymTab(VOID, "print", {"input"}, {STRING_EXP});
-    InsertFuncSymTab(VOID, "printi", {"input"}, {INT_EXP});
+    InsertFuncSymTab(VOID_EXP, "print", {"input"}, {STRING_EXP});
+    InsertFuncSymTab(VOID_EXP, "printi", {"input"}, {INT_EXP});
 }
 
 void CloseMainScope()

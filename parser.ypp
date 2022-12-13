@@ -38,7 +38,7 @@ FuncDecl: RetType ID LPAREN Formals RPAREN {CheckPrevDeclID($2, yylineno);
                                             LBRACE Statements RBRACE {CloseBlock();} //4
 ;
 RetType: Type                                   {$$ = $1;} //5
-         | VOID                                 {$$ = std::shared_ptr<TypeVar>(); $$->type = VOID;} //6
+         | VOID                                 {$$ = std::shared_ptr<TypeVar>(); $$->type = VOID_EXP;} //6
 ;
 Formals: /*epsilon*/                            {$$ = std::shared_ptr<TypeVar>();} //7
         | FormalsList                           {$$ =$1;} //8
