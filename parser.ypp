@@ -33,8 +33,8 @@ Funcs: /*epsilon*/                              {} \\2
  ;
 FuncDecl: RetType ID LPAREN Formals RPAREN LBRACE Statements RBRACE {} \\4
 ;
-RetType: Type                                   {} \\5
-         | VOID                                 {} \\6
+RetType: Type                                   {$$ = $1;} \\5
+         | VOID                                 {$$ = std::shared_ptr<TypeVar>(); $$->type = VOID;} \\6
 ;
 Formals: /*epsilon*/                            {} \\7
         | FormalsList                           {} \\8
@@ -66,14 +66,18 @@ Call :ID LPAREN ExpList RPAREN                  {} \\26
 ExpList: Exp                                     {} \\28
          | Exp COMMA ExpList                     {} \\29
 ;
-Type :INT                                        {} \\30
-      | BYTE                                     {} \\31
-      | BOOL                                     {} \\32
+Type :  INT                                      {$$ = std::shared_ptr<TypeVar>(); $$->type = INT_EXP;} \\30
+      | BYTE                                     {$$ = std::shared_ptr<TypeVar>(); $$->type = BYTE_EXP;} \\31
+      | BOOL                                     {$$ = std::shared_ptr<TypeVar>(); $$->type = BOOL_EXP;} \\32
 ;
-Exp: LPAREN Exp RPAREN                           {} \\33
+Exp:    LPAREN Exp RPAREN                        {$$ = $2;} \\33
       | Exp IF LPAREN Exp RPAREN ELSE Exp        {} \\34
-      | Exp BINOP Exp                            {} \\35
-      | Exp MULTDIVTOP Exp                       {} \\35
+      | Exp BINOP Exp                            {$$ = std::shared_ptr<TypeVar>();
+                                                  CheckIsNum($1, yylineno); CheckIsNum($3, yylineno);
+                                                  $$->type = GetType($1, $3); } \\35
+      | Exp MULTDIVTOP Exp                       {$$ = std::shared_ptr<TypeVar>();
+                                                  CheckIsNum($1, yylineno); CheckIsNum($3, yylineno);
+                                                  $$->type = GetType($1, $3);} \\35
       | ID                                       {} \\36
       | Call                                     {} \\37
       | NUM                                      {} \\38
