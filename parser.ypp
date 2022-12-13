@@ -26,50 +26,50 @@ COMMA ID NUM STRING
 %right ELSE
 
 %%
-Prog: Funcs                                     {} \\1 Done
+Prog: Funcs                                     {} //1 Done
 ;
-Funcs: /*epsilon*/                              {} \\2 Done
-        | FuncDecl Funcs                        {} \\3 Done
+Funcs: /*epsilon*/                              {} //2 Done
+        | FuncDecl Funcs                        {} //3 Done
  ;
 FuncDecl: RetType ID LPAREN Formals RPAREN {CheckPrevDeclID($2, yylineno);
                                             InsertFuncSymTab($1->type, $2->id, $4->var_names, $4->var_types);
                                             OpenNewBlock(false, $1->type);
                                             InsertParamsToSymTab($4->var_names, $4->var_types, yylineno);}
-                                            LBRACE Statements RBRACE {CloseBlock();} \\4
+                                            LBRACE Statements RBRACE {CloseBlock();} //4
 ;
-RetType: Type                                   {$$ = $1;} \\5
-         | VOID                                 {$$ = std::shared_ptr<TypeVar>(); $$->type = VOID;} \\6
+RetType: Type                                   {$$ = $1;} //5
+         | VOID                                 {$$ = std::shared_ptr<TypeVar>(); $$->type = VOID;} //6
 ;
-Formals: /*epsilon*/                            {$$ = std::shared_ptr<TypeVar>();} \\7
-        | FormalsList                           {$$ =$1;} \\8
+Formals: /*epsilon*/                            {$$ = std::shared_ptr<TypeVar>();} //7
+        | FormalsList                           {$$ =$1;} //8
 ;
 FormalsList: FormalDecl                         {$$ = std::shared_ptr<TypeVar>();
                                                  $$->var_names = PushBackVarID($1->id, $$->var_names);
-                                                 $$->var_types = PushBackVarType($1->type, $$->var_types);} \\9
+                                                 $$->var_types = PushBackVarType($1->type, $$->var_types); } //9
              | FormalDecl COMMA FormalsList     {$$ = std::shared_ptr<TypeVar>();
                                                  $$->var_names = PushBackVarID($1->id, $3->var_names);
-                                                 $$->var_types = PushBackVarType($1->type, $3->var_types);} \\10
+                                                 $$->var_types = PushBackVarType($1->type, $3->var_types);} //10
 ;
-FormalDecl: Type ID                             {$$ = $2; $$->type = $1->type;} \\11
+FormalDecl: Type ID                             {$$ = $2; $$->type = $1->type;} //11
 ;
-Statements: Statement                           {} \\12  Done
-            | Statements Statement              {} \\13  Done
+Statements: Statement                           {} //12  Done
+            | Statements Statement              {} //13  Done
 ;
-Statement: LBRACE OPENBLOCK Statements RBRACE   {CloseBlock();} \\14
+Statement: LBRACE OPENBLOCK Statements RBRACE   {CloseBlock();} //14
             | Type ID SC                        {CheckPrevDeclID($2, yylineno);
-                                                 InsertToSymTable($1, $2, false, yylineno);} \\15
+                                                 InsertToSymTable($1, $2, false, yylineno);} //15
             | Type ID ASSIGN Exp SC             {CheckPrevDeclID($2, yylineno);
                                                  CheckAssign($1, $4, yylineno);
-                                                 InsertToSymTable($1, $2, false, yylineno);} \\16
-            | ID ASSIGN Exp SC                  {ValidateAssign($1, $3, yylineno);} \\17
-            | Call SC                           {} \\18 Done
-            | RETURN SC                         {CheckVoidScope(yylineno); } \\19
-            | RETURN Exp SC                     {ValidateRetType($2, yylineno); } \\20
-            | IF LPAREN CHECKBOOLVALID RPAREN OPENBLOCK Statement CLOSEBLOCK   {} \\21
-            | IF LPAREN CHECKBOOLVALID RPAREN OPENBLOCK Statement CLOSEBLOCK ELSE OPENBLOCK Statement CLOSEBLOCK {} \\22
-            | WHILE LPAREN CHECKBOOLVALID RPAREN WHILEBLOCK OPENBLOCK Statement CLOSEBLOCK WHILEBLOCKCLOSED{} \\23
-            | BREAK SC                          {CheckWhileScope(yylineno, true);} \\24
-            | CONTINUE SC                       {CheckWhileScope(yylineno, false);} \\25
+                                                 InsertToSymTable($1, $2, false, yylineno);} //16
+            | ID ASSIGN Exp SC                  {ValidateAssign($1, $3, yylineno);} //17
+            | Call SC                           {} //18 Done
+            | RETURN SC                         {CheckVoidScope(yylineno); } //19
+            | RETURN Exp SC                     {ValidateRetType($2, yylineno); } //20
+            | IF LPAREN CHECKBOOLVALID RPAREN OPENBLOCK Statement CLOSEBLOCK   {} //21
+            | IF LPAREN CHECKBOOLVALID RPAREN OPENBLOCK Statement CLOSEBLOCK ELSE OPENBLOCK Statement CLOSEBLOCK {} //22
+            | WHILE LPAREN CHECKBOOLVALID RPAREN WHILEBLOCK OPENBLOCK Statement CLOSEBLOCK WHILEBLOCKCLOSED{} //23
+            | BREAK SC                          {CheckWhileScope(yylineno, true);} //24
+            | CONTINUE SC                       {CheckWhileScope(yylineno, false);} //25
 ;
 
 /*Markers*/
@@ -89,45 +89,45 @@ WHILEBLOCKCLOSED: /* epsilon */               {WhileBlockState(false);}
 
 Call :  ID LPAREN ExpList RPAREN                  {$$ = $3;
                                                    CallFunction($1, $3, $$, yylineno);
-                                                   $$->id = $1->id; } \\26
+                                                   $$->id = $1->id; } //26
       | ID LPAREN RPAREN                        {$$ = $1;
-                                                 CallFunction($1, std::make_shared<TypeVar>(), $$, yylineno); } \\27
+                                                 CallFunction($1, std::make_shared<TypeVar>(), $$, yylineno); } //27
 ;
 ExpList: Exp                                     {$$ = std::make_shared<TypeVar>();
                                                   $$->var_names = PushBackVarID($1->id, $$->var_names);
-                                                  $$->var_types = PushBackVarType($1->type, $$->var_types);} \\28
+                                                  $$->var_types = PushBackVarType($1->type, $$->var_types);} //28
          | Exp COMMA ExpList                     {$$ = $3;
                                                   $$->var_names = PushBackVarID($1->id, $3->var_names);
-                                                  $$->var_types = PushBackVarType($1->type, $3->var_types);} \\29
+                                                  $$->var_types = PushBackVarType($1->type, $3->var_types);} //29
 ;
-Type :  INT                                      {$$ = std::shared_ptr<TypeVar>(); $$->type = INT_EXP;} \\30
-      | BYTE                                     {$$ = std::shared_ptr<TypeVar>(); $$->type = BYTE_EXP;} \\31
-      | BOOL                                     {$$ = std::shared_ptr<TypeVar>(); $$->type = BOOL_EXP;} \\32
+Type :  INT                                      {$$ = std::shared_ptr<TypeVar>(); $$->type = INT_EXP;} //30
+      | BYTE                                     {$$ = std::shared_ptr<TypeVar>(); $$->type = BYTE_EXP;} //31
+      | BOOL                                     {$$ = std::shared_ptr<TypeVar>(); $$->type = BOOL_EXP;} //32
 ;
-Exp:    LPAREN Exp RPAREN                        {$$ = $2;} \\33
-      | Exp IF LPAREN Exp RPAREN ELSE Exp        {} \\34 todo?!?!??!?!?!??!
+Exp:    LPAREN Exp RPAREN                        {$$ = $2;} //33
+      | Exp IF LPAREN Exp RPAREN ELSE Exp        {} //34 todo?!?!??!?!?!??!
       | Exp BINOP Exp                            {$$ = std::shared_ptr<TypeVar>();
                                                   CheckIsNum($1, yylineno); CheckIsNum($3, yylineno);
-                                                  $$->type = GetType($1, $3); } \\35
+                                                  $$->type = GetType($1, $3); } //35
       | Exp MULTDIVTOP Exp                       {$$ = std::shared_ptr<TypeVar>();
                                                   CheckIsNum($1, yylineno); CheckIsNum($3, yylineno);
-                                                  $$->type = GetType($1, $3);} \\35
-      | ID                                       {$$ = $1; VarExistsInScope($$, yylineno);} \\36
-      | Call                                     {$$ = $1;} \\37 todo?
-      | NUM                                      {$$ = $1; $$->type = INT_EXP} \\38
-      | NUM B                                    {$$ = $1; CheckByteOverflow($$, yylineno); $$->type = BYTE_EXP;} \\39
-      | STRING                                   {$$ = std::shared_ptr<TypeVar>(); $$->type = STRING_EXP;} \\40
-      | TRUE                                     {$$ = std::shared_ptr<TypeVar>(); $$->type = BOOL_EXP;} \\41
-      | FALSE                                    {$$ = std::shared_ptr<TypeVar>(); $$->type = BOOL_EXP;} \\42
-      | NOT Exp                                  {$$ = $2; CheckIsBool($$, yylineno);} \\43
-      | Exp AND Exp                              {CheckIsBool($1, yylineno); CheckIsBool($3, yylineno); $$ = $1;} \\44
-      | Exp OR Exp                               {CheckIsBool($1, yylineno); CheckIsBool($3, yylineno); $$ = $1;} \\45
+                                                  $$->type = GetType($1, $3);} //35
+      | ID                                       {$$ = $1; VarExistsInScope($$, yylineno);} //36
+      | Call                                     {$$ = $1;} //37 todo?
+      | NUM                                      {$$ = $1; $$->type = INT_EXP} //38
+      | NUM B                                    {$$ = $1; CheckByteOverflow($$, yylineno); $$->type = BYTE_EXP;} //39
+      | STRING                                   {$$ = std::shared_ptr<TypeVar>(); $$->type = STRING_EXP;} //40
+      | TRUE                                     {$$ = std::shared_ptr<TypeVar>(); $$->type = BOOL_EXP;} //41
+      | FALSE                                    {$$ = std::shared_ptr<TypeVar>(); $$->type = BOOL_EXP;} //42
+      | NOT Exp                                  {$$ = $2; CheckIsBool($$, yylineno);} //43
+      | Exp AND Exp                              {CheckIsBool($1, yylineno); CheckIsBool($3, yylineno); $$ = $1;} //44
+      | Exp OR Exp                               {CheckIsBool($1, yylineno); CheckIsBool($3, yylineno); $$ = $1;} //45
       | Exp RELOP Exp                            {CheckIsNum($1, yylineno); CheckIsNum($3, yylineno);
-                                                  $$ = std::shared_ptr<TypeVar>(); $$->type = BOOL_EXP;} \\46
+                                                  $$ = std::shared_ptr<TypeVar>(); $$->type = BOOL_EXP;} //46
       | Exp EQOP Exp                             {CheckIsNum($1, yylineno); CheckIsNum($3, yylineno);
-                                                  $$ = td::shared_ptr<TypeVar>(); $$->type = BOOL_EXP;} \\46
+                                                  $$ = td::shared_ptr<TypeVar>(); $$->type = BOOL_EXP;} //46
       | LPAREN Type RPAREN Exp                   {CheckIsNum($2,yylineno); CheckIsNum($4,yylineno);
-                                                   $$ = $4; $$->type = $2->type;} \\47
+                                                   $$ = $4; $$->type = $2->type;} //47
 ;
 %%
 
