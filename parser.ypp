@@ -82,18 +82,26 @@ Exp:    LPAREN Exp RPAREN                        {$$ = $2;} \\33
       | Call                                     {} \\37
       | NUM                                      {} \\38
       | NUM B                                    {} \\39
-      | STRING                                   {} \\40
-      | TRUE                                     {} \\41
-      | FALSE                                    {} \\42
-      | NOT Exp                                  {} \\43
-      | Exp AND Exp                              {} \\44
-      | Exp OR Exp                               {} \\45
-      | Exp RELOP Exp                            {} \\46
-      | Exp EQOP Exp                             {} \\47
+      | STRING                                   {$$ = std::shared_ptr<TypeVar>(); $$->type = STRING_EXP;} \\40
+      | TRUE                                     {$$ = std::shared_ptr<TypeVar>(); $$->type = BOOL_EXP;} \\41
+      | FALSE                                    {$$ = std::shared_ptr<TypeVar>(); $$->type = BOOL_EXP; \\42
+      | NOT Exp                                  {$$ = $2; CheckIsBool($$, yylineno);} \\43
+      | Exp AND Exp                              {CheckIsBool($1, yylineno); CheckIsBool($3, yylineno); $$ = $1;} \\44
+      | Exp OR Exp                               {CheckIsBool($1, yylineno); CheckIsBool($3, yylineno); $$ = $1;} \\45
+      | Exp RELOP Exp                            {CheckIsNum($1, yylineno); CheckIsNum($3, yylineno);
+                                                  $$ = std::shared_ptr<TypeVar>(); $$->type = BOOL_EXP;} \\46
+      | Exp EQOP Exp                             {CheckIsNum($1, yylineno); CheckIsNum($3, yylineno);
+                                                  $$ = td::shared_ptr<TypeVar>(); $$->type = BOOL_EXP;} \\47
       | LPAREN Type RPAREN Exp                   {} \\48
 ;
 %%
+
 void yyerror(const char*) {errorSyn(yylineno); exit(1);}
-int main() {
-    return yyparse();
+
+int main()
+{
+    MainScopeInitialization(); //todo:Implement
+    yyparse();
+    CloseMainScope(); //todo: Implement
+    return 0;
 }
