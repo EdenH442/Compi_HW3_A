@@ -1,7 +1,7 @@
 #ifndef COMPI_HW3_TYPEVAR_H
 #define COMPI_HW3_TYPEVAR_H
 
-#define YYSTYPE std::shared_ptr<Var>
+#define YYSTYPE std::shared_ptr<TypeVar>
 
 #include <string>
 #include "hw3_output.hpp"
