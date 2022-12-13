@@ -44,3 +44,26 @@ void CheckAssign(std::shared_ptr<TypeVar> left_var, std::shared_ptr<TypeVar> rig
     output::errorMismatch(lineno);
     exit(1);
 }
+
+void CheckByteOverflow(std::shared_ptr<TypeVar> var, int lineno)
+{
+    if (var->value > 0xFF)
+    {
+        output::errorByteTooLarge(lineno, to_string(var->value));
+        exit(1);
+    }
+}
+
+
+std::vector<string> PushBackVarID(const string& var, std::vector<string> vars_list)
+{
+    vars_list.push_back(var);
+    return vars_list;
+}
+
+std::vector<ExpType> PushBackVarType(const ExpType& var_type, std::vector<ExpType> types_list)
+{
+    types_list.push_back(var_type);
+    return types_list;
+}
+

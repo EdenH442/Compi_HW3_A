@@ -25,7 +25,7 @@ public:
     int value{};
     ExpType type;
     std::vector<std::string> var_names;
-    std::vector<std::string> var_types;
+    std::vector<ExpType> var_types;
 
     TypeVar() = default;
     ~TypeVar() = default;
@@ -36,6 +36,7 @@ ExpType GetType(std::shared_ptr<TypeVar> const &var1, std::shared_ptr<TypeVar> c
 void CheckIsNum(std::shared_ptr<TypeVar> const &var, int lineno);
 void CheckIsBool(std::shared_ptr<TypeVar> const &var, int lineno);
 void CheckAssign(std::shared_ptr<TypeVar> left_var, std::shared_ptr<TypeVar> right_var, int lineno);
+void CheckByteOverflow(std::shared_ptr<TypeVar> var, int lineno);
 
 
 

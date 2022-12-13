@@ -1,6 +1,6 @@
 %{
-#include "parser.tab.hpp"
-#include "output.hpp"
+#include "TypeVar.h"
+#include "hw3_output.hpp"
 using namespace output;
 %}
 
@@ -35,8 +35,8 @@ continue                            return CONTINUE;
 ==|!=                               return EQOP;
 \+|\-                               return BINOP;
 \*|\/                               return MULTDIVTOP;
-[a-zA-Z][a-zA-Z0-9]*                return ID;
-0|[1-9][0-9]*                       return NUM;
+[a-zA-Z][a-zA-Z0-9]*                {yylval = std::make_shared<TypeVar>(); yylval->id = yytext; return ID;}
+0|[1-9][0-9]*                       {yylval = std::make_shared<TypeVar>(); yylval->value = stoi(yytext); return NUM;}
 \"([^\n\r\"\\]|\\[rnt"\\])+\"       return STRING;
 \/\/[^\r\n]*[\r|\n|\r\n]?|[\t\n\r ] ;
 .                                  {errorLex(yylineno); exit(1);}

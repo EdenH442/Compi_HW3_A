@@ -11,19 +11,19 @@ using std::string;
 class symTableBlockEntry{
 public:
     int offset;
-    string type;
+    ExpType type;
     string id;
-    std::vector<string> types_vec;
+    std::vector<ExpType> types_vec;
     std::vector<string> names_vec;
     bool null_offset;
     bool is_func = false;
 
     symTableBlockEntry() = default;
 
-    symTableBlockEntry(int offset, string type, string id, bool null_offset, bool is_func) :
+    symTableBlockEntry(int offset, ExpType type, string id, bool null_offset, bool is_func) :
             offset(offset), type(type), id(id), null_offset(null_offset), is_func(is_func){};
 
-    symTableBlockEntry(int offset, string type, string id,std::vector<string> types_vec, std::vector<string> names_vec,
+    symTableBlockEntry(int offset, ExpType type, string id,std::vector<ExpType> types_vec, std::vector<string> names_vec,
                        bool null_offset, bool is_func) :
             offset(offset), type(type), id(id), types_vec(types_vec), names_vec(names_vec),
             null_offset(null_offset), is_func(is_func){};
@@ -37,11 +37,18 @@ typedef struct{
 
 
 typedef struct{
+public:
     std::vector<symTableBlock> sym_tab_stack;
     std::stack<int> offset_stack;
-    bool main_exists;
+    bool main_exists= false;
 //    int while_scope = 0;
 } SemanticsManager;
+
+void VarExistsInScope(std::shared_ptr<TypeVar> const &var, int lineno);
+void CallFunction(const std::shared_ptr<TypeVar>& id_var,  std::shared_ptr<TypeVar>& params,
+                            std::shared_ptr<TypeVar>& caller, int lineno);
+void CheckPrevDeclID(const std::shared_ptr<TypeVar>& var, int lineno);
+
 
 
 #endif //COMPI_HW3_SYMBOLTABLE_H
